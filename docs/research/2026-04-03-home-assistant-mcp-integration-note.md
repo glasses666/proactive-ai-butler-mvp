@@ -206,3 +206,118 @@ The right first move is:
 - build the first butler interaction loop around `intent -> recommended scenes -> confirmation -> execution`
 
 This is the lowest-risk path that still leaves room for later resident agents and director agents.
+
+## Source Audit Notes
+
+This section summarizes a direct audit of the official Home Assistant source code on 2026-04-03.
+
+Relevant source files:
+
+- `homeassistant/components/mcp_server/http.py`
+- `homeassistant/components/mcp_server/server.py`
+- `homeassistant/components/mcp_server/config_flow.py`
+- `homeassistant/helpers/llm.py`
+
+### What the source confirms
+
+#### 1. `mcp_server` is a wrapper around Home Assistant LLM APIs
+
+The server implementation does not invent an independent capability model.
+
+In `server.py`, MCP prompt listing, prompt retrieval, tool listing, and tool calling are all delegated to the Home Assistant `llm` API instance returned by `homeassistant.helpers.llm.async_get_api(...)`.
+
+This means:
+
+- the MCP transport is thin
+- the real capability boundary lives in Home Assistant `llm` APIs
+- if we want richer tools, we either change the underlying HA LLM API behavior or add another layer outside HA
+
+#### 2. Official transport is already modern enough
+
+In `http.py`, Home Assistant supports:
+
+- `POST /api/mcp` for Streamable HTTP
+- legacy SSE endpoints for older clients
+
+This reduces the need to fork HA just to get a usable transport.
+
+#### 3. MCP tool exposure is filtered through Assist and exposed entities
+
+In `llm.py`, the default `AssistAPI` builds tool prompts and tool availability from:
+
+- exposed entities
+- intent handlers
+- a limited set of helper tools like `GetLiveContext`, `GetDateTime`, calendar and todo tools, and exposed scripts
+
+This is important because it means Home Assistant MCP is not exposing an unrestricted raw service universe by default. It is exposing a curated LLM-oriented tool layer.
+
+#### 4. Multiple LLM APIs can be merged
+
+The config flow allows selecting one or more Home Assistant LLM APIs.
+
+`helpers/llm.py` contains `MergedAPI`, which namespaces tools from multiple APIs and merges prompts into one API instance.
+
+This is the strongest sign that a custom extension path exists without patching the MCP transport itself.
+
+### What this means for our architecture
+
+The code suggests three options:
+
+#### Option A: use official `mcp_server` unchanged
+
+This is the best first move.
+
+Pros:
+
+- stable
+- supported
+- device discovery stays aligned with Assist / exposed entities
+- no maintenance burden
+
+Cons:
+
+- still device- and intent-centric
+- not a full butler semantics layer
+
+#### Option B: extend Home Assistant by registering a custom LLM API
+
+This is the most interesting advanced option.
+
+Because `mcp_server` wraps `helpers.llm`, we could register a custom Home Assistant LLM API that exposes high-level butler tools instead of only Assist-flavored control tools.
+
+That would let Home Assistant MCP expose tools like:
+
+- `suggest_scenes_from_intent`
+- `apply_household_scene`
+- `summarize_household_context`
+- `request_confirmation`
+
+This is much cleaner than forking the transport layer.
+
+#### Option C: fork or patch `mcp_server`
+
+This is the least attractive option right now.
+
+Forking `mcp_server` would make sense only if:
+
+- we needed unsupported MCP protocol features at the transport layer
+- we needed different auth or session handling
+- the official wrapping model blocked essential behavior
+
+The current source audit does not show that transport is the main bottleneck.
+
+### Updated Recommendation
+
+If official Home Assistant MCP feels too low-level, the better move is not to "爆改" `mcp_server` first.
+
+The better move is:
+
+1. Start with official `mcp_server`.
+2. Evaluate whether its current Assist-derived tools are enough.
+3. If not enough, add a custom Home Assistant `llm` API or add a project-specific external Butler MCP.
+4. Only consider patching `mcp_server` itself if transport-level limits become the blocker.
+
+In short:
+
+- do not fork the transport first
+- extend the semantic tool layer first
