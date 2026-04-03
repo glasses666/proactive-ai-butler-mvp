@@ -13,7 +13,7 @@ const port = Number(process.env.BUTLER_MCP_PORT ?? 8790);
 const host = process.env.BUTLER_MCP_HOST ?? "0.0.0.0";
 const runtimeBaseUrl = process.env.BUTLER_RUNTIME_BASE_URL ?? "http://127.0.0.1:8787";
 
-const app = createMcpExpressApp();
+const app = createMcpExpressApp({ host });
 
 app.get("/health", (_req: Request, res: Response) => {
   res.status(200).json({
