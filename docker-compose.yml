@@ -21,6 +21,24 @@ services:
     networks:
       - butler-net
 
+  butler-mcp:
+    image: proactive-ai-butler-mvp-butler-app:latest
+    build:
+      context: .
+    container_name: butler-mcp
+    restart: unless-stopped
+    command: ["node", "dist/butler-mcp-server.js"]
+    environment:
+      BUTLER_MCP_HOST: ${BUTLER_MCP_HOST:-0.0.0.0}
+      BUTLER_MCP_PORT: ${BUTLER_MCP_PORT:-8790}
+      BUTLER_RUNTIME_BASE_URL: ${BUTLER_RUNTIME_BASE_URL:-http://butler-app:8787}
+    ports:
+      - "8790:8790"
+    depends_on:
+      - butler-app
+    networks:
+      - butler-net
+
   mosquitto:
     image: eclipse-mosquitto:2
     container_name: butler-mosquitto
