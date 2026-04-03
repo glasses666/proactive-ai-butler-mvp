@@ -1,0 +1,24 @@
+default_config:
+
+frontend:
+
+api:
+
+history:
+
+logbook:
+
+recorder:
+  purge_keep_days: 7
+
+# MQTT broker connection must be added from the Home Assistant UI.
+# The butler runtime already publishes MQTT discovery topics once the UI-side
+# MQTT integration is connected to the local mosquitto broker.
+
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 172.16.0.0/12
+
+lovelace:
+  mode: storage

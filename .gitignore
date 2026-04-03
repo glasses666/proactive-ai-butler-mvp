@@ -1,0 +1,14 @@
+node_modules
+dist
+.env
+.DS_Store
+coverage
+*.log
+.npm-cache
+*.tar
+*.tgz
+infra/homeassistant/.storage
+infra/homeassistant/.HA_VERSION
+infra/homeassistant/.ha_run.lock
+infra/homeassistant/home-assistant.log*
+infra/homeassistant/home-assistant_v2.db*

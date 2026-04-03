@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>管家环观测台</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">主动式家庭运行环</p>
+          <h1>管家环观测台</h1>
+          <p class="lede">
+            面向 R6C 管家 MVP 的家庭运行观测界面。房间、住户、扰动事件、规划状态和动作轨迹都集中显示在这里。
+          </p>
+        </div>
+        <div class="hero-panel">
+          <div class="metric">
+            <span class="metric-label">当前目标</span>
+            <strong id="goal-text">等待中</strong>
+          </div>
+          <div class="metric">
+            <span class="metric-label">当前时间</span>
+            <strong id="time-text">--</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="controls">
+        <button data-scenario="travel_preparation">触发出行准备</button>
+        <button data-scenario="work_coordination">注入工作冲突</button>
+        <button data-scenario="replanning">强制重规划</button>
+      </section>
+
+      <section class="grid">
+        <div class="panel map-panel">
+          <div class="panel-head">
+            <h2>家庭舞台</h2>
+            <span class="badge">斜视角控制台</span>
+          </div>
+          <div id="map" class="map"></div>
+        </div>
+
+        <div class="panel plan-panel">
+          <div class="panel-head">
+            <h2>规划器</h2>
+            <span class="badge">结构化计划</span>
+          </div>
+          <div id="plan" class="plan"></div>
+        </div>
+
+        <div class="panel events-panel">
+          <div class="panel-head">
+            <h2>近期事件</h2>
+            <span class="badge">导演事件流</span>
+          </div>
+          <div id="events" class="events"></div>
+        </div>
+
+        <div class="panel timeline-panel">
+          <div class="panel-head">
+            <h2>动作时间线</h2>
+            <span class="badge">回放轨迹</span>
+          </div>
+          <div id="timeline" class="timeline"></div>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
