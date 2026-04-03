@@ -140,3 +140,97 @@ export interface ObserverFeed {
   timeline: TimelineEntry[];
   plan: PlannerPlan | null;
 }
+
+export type RuntimeRiskLevel = "low" | "medium" | "high";
+
+export interface RuntimeDevice {
+  id: string;
+  label: string;
+  kind: Device["kind"];
+  room: {
+    id: string;
+    label: string;
+  };
+  state: string;
+  allowedStates: string[];
+  controllable: boolean;
+  isVirtual: boolean;
+  riskLevel: RuntimeRiskLevel;
+}
+
+export interface RuntimeSummary {
+  currentTime: string;
+  plannerStatus: PlannerStatusLike;
+  residents: Array<{
+    id: string;
+    label: string;
+    roomId: string;
+    focusMode: ResidentState["focusMode"];
+    quietNeeded: boolean;
+  }>;
+  rooms: Array<{
+    id: string;
+    label: string;
+    ambience: RoomState["ambience"];
+    occupied: boolean;
+  }>;
+  houseMode: {
+    id: string;
+    label: string;
+    state: string;
+  } | null;
+  activeReminders: Array<{
+    id: string;
+    label: string;
+    state: string;
+  }>;
+  keySchedule: WorldSchedule;
+  recentDisruptions: DirectorEvent[];
+  pendingConfirmations: number;
+}
+
+export interface SceneSuggestion {
+  sceneId: string;
+  title: string;
+  reason: string;
+  requiresConfirmation: boolean;
+  expectedDeviceChanges: Array<{
+    targetId: string;
+    desiredState: string;
+  }>;
+}
+
+export interface RuntimeExecutionRecord {
+  id: string;
+  time: string;
+  kind: "device_command" | "scene_apply";
+  status: "success" | "partial_failure" | "error";
+  requestedBy?: string;
+  reason?: string;
+  targetId?: string;
+  desiredState?: string;
+  sceneId?: string;
+}
+
+export interface SceneApplyResult {
+  sceneId: string;
+  status: "success" | "partial_failure";
+  plannedActions: PlanAction[];
+  executedActions: PlanAction[];
+  blockedActions: Array<{
+    targetId: string;
+    desiredState: string;
+    reason: string;
+  }>;
+  summary: RuntimeSummary;
+}
+
+export interface PlannerStatusLike {
+  configuredMode: string;
+  source: string;
+  ready: boolean;
+  reason?: string;
+  hasRun?: boolean;
+  configuredBaseUrl?: string;
+  configuredModel?: string;
+}

@@ -5,13 +5,29 @@ import { applyDirectDeviceCommand, applyPlanActions } from "./execution.js";
 import { buildObserverFeed } from "./observer.js";
 import { evaluatePlanAction } from "./policy.js";
 import { executePlanner, getPlannerStatus } from "./planner.js";
+import {
+  buildRuntimeDevices,
+  buildRuntimeSummary,
+  createExecutionRecord,
+  getSceneDefinition,
+  suggestScenes
+} from "./runtime.js";
 import type { PlannerStatus } from "./planner.js";
-import type { ObserverFeed, PlannerPlan, World } from "./types.js";
+import type {
+  ObserverFeed,
+  PlannerPlan,
+  RuntimeExecutionRecord,
+  RuntimeSummary,
+  SceneApplyResult,
+  SceneSuggestion,
+  World
+} from "./types.js";
 
 export class Orchestrator {
   private readonly world: World;
   private currentPlan: PlannerPlan | null = null;
   private lastPlannerStatus: PlannerStatus | null = null;
+  private readonly executionHistory: RuntimeExecutionRecord[] = [];
 
   constructor(world: World = createDemoWorld()) {
     this.world = world;
@@ -29,12 +45,109 @@ export class Orchestrator {
     return getPlannerStatus(process.env, this.lastPlannerStatus);
   }
 
+  getRuntimeSummary(): RuntimeSummary {
+    return buildRuntimeSummary(this.world, this.getPlannerStatus(), this.currentPlan);
+  }
+
+  listRuntimeDevices() {
+    return buildRuntimeDevices(this.world);
+  }
+
+  listExecutions() {
+    return [...this.executionHistory].reverse();
+  }
+
   applyExternalDeviceCommand(
     targetId: string,
     desiredState: string,
-    _meta: { source: "ha_mqtt" }
+    meta: { source: "ha_mqtt"; requestedBy?: string; reason?: string }
   ): { status: "success" | "error"; reason?: string } {
-    return applyDirectDeviceCommand(this.world, targetId, desiredState);
+    const result = applyDirectDeviceCommand(this.world, targetId, desiredState);
+    this.executionHistory.push(
+      createExecutionRecord(this.world, {
+        kind: "device_command",
+        status: result.status === "success" ? "success" : "error",
+        targetId,
+        desiredState,
+        requestedBy: meta.requestedBy ?? meta.source,
+        reason: meta.reason
+      })
+    );
+    return result;
+  }
+
+  suggestRuntimeScenes(input: { utterance: string }): SceneSuggestion[] {
+    return suggestScenes(this.world, input.utterance);
+  }
+
+  applyRuntimeScene(input: { sceneId: string }): SceneApplyResult {
+    const scene = getSceneDefinition(this.world, input.sceneId);
+    if (!scene) {
+      return {
+        sceneId: input.sceneId,
+        status: "partial_failure",
+        plannedActions: [],
+        executedActions: [],
+        blockedActions: [
+          {
+            targetId: input.sceneId,
+            desiredState: "n/a",
+            reason: "unknown_scene"
+          }
+        ],
+        summary: this.getRuntimeSummary()
+      };
+    }
+
+    const allowedActions = [];
+    const blockedActions: SceneApplyResult["blockedActions"] = [];
+
+    for (const action of scene.actions) {
+      const decision = evaluatePlanAction(this.world, action);
+      if (decision.status === "allowed") {
+        allowedActions.push(action);
+        continue;
+      }
+
+      if (decision.status === "needs_confirmation") {
+        this.world.taskState.pendingConfirmations += 1;
+      }
+
+      blockedActions.push({
+        targetId: action.targetId,
+        desiredState: action.desiredState,
+        reason: decision.reason
+      });
+      this.world.timeline.push({
+        id: `timeline-scene-policy-${Math.random().toString(36).slice(2, 8)}`,
+        type: "action_failed",
+        time: this.world.currentTime,
+        message: `${action.targetId}: ${decision.reason}`,
+        targetId: action.targetId
+      });
+    }
+
+    const execution = applyPlanActions(this.world, allowedActions);
+    const status =
+      blockedActions.length > 0 || execution.failed.length > 0 ? "partial_failure" : "success";
+
+    this.executionHistory.push(
+      createExecutionRecord(this.world, {
+        kind: "scene_apply",
+        status,
+        sceneId: scene.sceneId,
+        reason: scene.reason
+      })
+    );
+
+    return {
+      sceneId: scene.sceneId,
+      status,
+      plannedActions: scene.actions,
+      executedActions: execution.executed,
+      blockedActions,
+      summary: this.getRuntimeSummary()
+    };
   }
 
   async runCycle(scenario: "travel_preparation" | "work_coordination" | "replanning"): Promise<{
