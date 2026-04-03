@@ -1,0 +1,25 @@
+<svg width="1200" height="620" viewBox="0 0 1200 620" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="620" rx="28" fill="#0B1220"/>
+
+  <text x="80" y="85" fill="#F8FAFC" font-size="40" font-family="Inter, Arial, sans-serif" font-weight="700">How the project is layered today</text>
+  <text x="80" y="125" fill="#94A3B8" font-size="22" font-family="Inter, Arial, sans-serif">为未来接 OpenClaw 和多 Agent 做准备，但先把“家庭运行时”抽稳。</text>
+
+  <rect x="80" y="180" width="1040" height="88" rx="22" fill="#142337" stroke="#2E4663"/>
+  <text x="120" y="232" fill="#F8FAFC" font-size="28" font-family="Inter, Arial, sans-serif" font-weight="700">Future Agent Runtime</text>
+  <text x="420" y="232" fill="#CBD5E1" font-size="24" font-family="Inter, Arial, sans-serif">OpenClaw / Butler Agent / Resident Agents</text>
+
+  <rect x="130" y="300" width="430" height="115" rx="24" fill="#102033" stroke="#35506E"/>
+  <text x="165" y="346" fill="#34D399" font-size="30" font-family="Inter, Arial, sans-serif" font-weight="700">Butler MCP</text>
+  <text x="165" y="388" fill="#D7E2F0" font-size="22" font-family="Inter, Arial, sans-serif">高层家庭工具：摘要、场景建议、场景执行、历史记录</text>
+
+  <rect x="640" y="300" width="430" height="115" rx="24" fill="#102033" stroke="#35506E"/>
+  <text x="675" y="346" fill="#7DD3FC" font-size="30" font-family="Inter, Arial, sans-serif" font-weight="700">Home Assistant MCP</text>
+  <text x="675" y="388" fill="#D7E2F0" font-size="22" font-family="Inter, Arial, sans-serif">低层设备入口：实体发现、原始控制、动态设备接入</text>
+
+  <rect x="80" y="455" width="1040" height="90" rx="22" fill="#142337" stroke="#2E4663"/>
+  <text x="120" y="507" fill="#F8FAFC" font-size="28" font-family="Inter, Arial, sans-serif" font-weight="700">Butler Runtime + Home Assistant + MQTT + Virtual Home UI</text>
+
+  <path d="M600 268V300" stroke="#4B6786" stroke-width="4" stroke-linecap="round"/>
+  <path d="M345 415V455" stroke="#4B6786" stroke-width="4" stroke-linecap="round"/>
+  <path d="M855 415V455" stroke="#4B6786" stroke-width="4" stroke-linecap="round"/>
+</svg>

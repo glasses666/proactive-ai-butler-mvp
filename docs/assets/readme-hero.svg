@@ -1,0 +1,84 @@
+<svg width="1200" height="720" viewBox="0 0 1200 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="80" y1="40" x2="1080" y2="680" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F172A"/>
+      <stop offset="1" stop-color="#132238"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="140" y1="120" x2="760" y2="560" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#14233A"/>
+      <stop offset="1" stop-color="#0C1626"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#34D399"/>
+      <stop offset="1" stop-color="#F59E0B"/>
+    </linearGradient>
+    <filter id="shadow" x="0" y="0" width="1400" height="900" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#020617" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="720" rx="32" fill="url(#bg)"/>
+  <circle cx="930" cy="120" r="140" fill="#1D4ED8" fill-opacity="0.12"/>
+  <circle cx="1020" cy="580" r="170" fill="#10B981" fill-opacity="0.08"/>
+
+  <g filter="url(#shadow)">
+    <rect x="70" y="70" width="1060" height="580" rx="28" fill="#09111E" fill-opacity="0.58" stroke="#26354D"/>
+  </g>
+
+  <text x="110" y="150" fill="#E2E8F0" font-size="42" font-family="Inter, Arial, sans-serif" font-weight="700">Proactive AI Butler MVP</text>
+  <text x="110" y="192" fill="#8FA4BF" font-size="22" font-family="Inter, Arial, sans-serif">把 Home Assistant 从“智能遥控器”变成“AI 管家试验场”</text>
+
+  <rect x="110" y="235" width="660" height="320" rx="26" fill="url(#panel)" stroke="#27364F"/>
+  <text x="138" y="276" fill="#CBD5E1" font-size="18" font-family="Inter, Arial, sans-serif">虚拟家庭</text>
+
+  <g transform="translate(150 315)">
+    <polygon points="0,90 140,20 280,90 140,160" fill="#23344B"/>
+    <polygon points="145,90 285,20 425,90 285,160" fill="#1D314B"/>
+    <polygon points="70,155 210,85 350,155 210,225" fill="#27405F"/>
+    <polygon points="215,155 355,85 495,155 355,225" fill="#20334D"/>
+
+    <circle cx="90" cy="100" r="10" fill="#F59E0B"/>
+    <circle cx="320" cy="102" r="10" fill="#34D399"/>
+    <circle cx="155" cy="176" r="10" fill="#E5E7EB"/>
+    <circle cx="410" cy="176" r="10" fill="#60A5FA"/>
+
+    <text x="38" y="82" fill="#E2E8F0" font-size="18" font-family="Inter, Arial, sans-serif">玄关</text>
+    <text x="255" y="82" fill="#E2E8F0" font-size="18" font-family="Inter, Arial, sans-serif">卧室</text>
+    <text x="125" y="255" fill="#E2E8F0" font-size="18" font-family="Inter, Arial, sans-serif">客厅</text>
+    <text x="378" y="255" fill="#E2E8F0" font-size="18" font-family="Inter, Arial, sans-serif">书房</text>
+
+    <rect x="22" y="12" width="94" height="34" rx="17" fill="#0F1C2E" stroke="#37506B"/>
+    <text x="39" y="35" fill="#F8FAFC" font-size="14" font-family="Inter, Arial, sans-serif">Entry Light</text>
+
+    <rect x="248" y="10" width="110" height="34" rx="17" fill="#0F1C2E" stroke="#37506B"/>
+    <text x="268" y="35" fill="#F8FAFC" font-size="14" font-family="Inter, Arial, sans-serif">Climate 20°C</text>
+
+    <rect x="120" y="238" width="110" height="34" rx="17" fill="#0F1C2E" stroke="#37506B"/>
+    <text x="147" y="261" fill="#F8FAFC" font-size="14" font-family="Inter, Arial, sans-serif">Quiet Mode</text>
+
+    <rect x="355" y="238" width="110" height="34" rx="17" fill="#0F1C2E" stroke="#37506B"/>
+    <text x="374" y="261" fill="#F8FAFC" font-size="14" font-family="Inter, Arial, sans-serif">Deep Work</text>
+  </g>
+
+  <rect x="815" y="236" width="265" height="118" rx="24" fill="#0E1B2C" stroke="#30506E"/>
+  <text x="840" y="274" fill="#7DD3FC" font-size="18" font-family="Inter, Arial, sans-serif">用户说</text>
+  <text x="840" y="316" fill="#F8FAFC" font-size="30" font-family="Inter, Arial, sans-serif" font-weight="700">“我今天很累，</text>
+  <text x="840" y="352" fill="#F8FAFC" font-size="30" font-family="Inter, Arial, sans-serif" font-weight="700">回家了。”</text>
+
+  <rect x="815" y="382" width="265" height="210" rx="24" fill="#0E1B2C" stroke="#30506E"/>
+  <text x="840" y="418" fill="#34D399" font-size="18" font-family="Inter, Arial, sans-serif">系统建议</text>
+
+  <rect x="840" y="442" width="210" height="40" rx="14" fill="#12263D"/>
+  <text x="862" y="468" fill="#F8FAFC" font-size="18" font-family="Inter, Arial, sans-serif">Rest Recovery Mode</text>
+
+  <rect x="840" y="494" width="210" height="40" rx="14" fill="#12263D"/>
+  <text x="857" y="520" fill="#E2E8F0" font-size="18" font-family="Inter, Arial, sans-serif">Prepare Sleep Transition</text>
+
+  <rect x="840" y="546" width="210" height="40" rx="14" fill="#12263D"/>
+  <text x="852" y="572" fill="#E2E8F0" font-size="18" font-family="Inter, Arial, sans-serif">Late Arrival Quiet Return</text>
+
+  <path d="M770 395C805 395 790 315 815 315" stroke="url(#accent)" stroke-width="4" stroke-linecap="round"/>
+  <path d="M770 430C805 430 790 487 815 487" stroke="url(#accent)" stroke-width="4" stroke-linecap="round"/>
+
+  <text x="110" y="605" fill="#AABDD3" font-size="18" font-family="Inter, Arial, sans-serif">当前能力：虚拟智能家居、Home Assistant 接入、外部 MCP、场景建议、场景执行、可视化观察</text>
+</svg>
