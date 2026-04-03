@@ -87,7 +87,7 @@ export class MqttBridge {
     this.publishSensorDiscovery("pending_confirmations", "Pending Confirmations", "number");
 
     for (const device of world.devices) {
-      this.publishDeviceDiscovery(device);
+      this.publishDeviceDiscovery(device, world);
     }
   }
 
@@ -105,10 +105,11 @@ export class MqttBridge {
     );
   }
 
-  private publishDeviceDiscovery(device: Device): void {
+  private publishDeviceDiscovery(device: Device, world: World): void {
     const objectId = sanitize(device.id);
     const stateTopic = `${this.rootTopic}/device/${objectId}/state`;
     const commandTopic = `${this.rootTopic}/device/${objectId}/command`;
+    const discoveryMeta = createDiscoveryMetadata(device, world, this.rootTopic);
 
     if (device.kind === "light") {
       this.clearLegacySensorDiscovery(objectId);
@@ -121,7 +122,8 @@ export class MqttBridge {
           command_topic: commandTopic,
           payload_on: "on",
           payload_off: "off",
-          icon: iconForDevice(device.kind)
+          icon: iconForDevice(device.kind),
+          ...discoveryMeta
         }),
         { retain: true }
       );
@@ -141,7 +143,8 @@ export class MqttBridge {
           payload_close: "closed",
           state_open: "open",
           state_closed: "closed",
-          icon: iconForDevice(device.kind)
+          icon: iconForDevice(device.kind),
+          ...discoveryMeta
         }),
         { retain: true }
       );
@@ -161,7 +164,8 @@ export class MqttBridge {
           payload_unlock: "unlocked",
           state_locked: "locked",
           state_unlocked: "unlocked",
-          icon: iconForDevice(device.kind)
+          icon: iconForDevice(device.kind),
+          ...discoveryMeta
         }),
         { retain: true }
       );
@@ -181,7 +185,8 @@ export class MqttBridge {
           state_topic: stateTopic,
           command_topic: commandTopic,
           options: device.allowedStates,
-          icon: iconForDevice(device.kind)
+          icon: iconForDevice(device.kind),
+          ...discoveryMeta
         }),
         { retain: true }
       );
@@ -194,7 +199,8 @@ export class MqttBridge {
         name: device.label,
         unique_id: `${this.rootTopic}_${objectId}`,
         state_topic: stateTopic,
-        icon: iconForDevice(device.kind)
+        icon: iconForDevice(device.kind),
+        ...discoveryMeta
       }),
       { retain: true }
     );
@@ -277,4 +283,27 @@ function iconForDevice(kind: Device["kind"]): string {
     default:
       return "mdi:bell-outline";
   }
+}
+
+function createDiscoveryMetadata(device: Device, world: World, rootTopic: string): {
+  suggested_area?: string;
+  device: {
+    identifiers: string[];
+    name: string;
+    manufacturer: string;
+    model: string;
+    via_device: string;
+  };
+} {
+  const room = world.rooms.find((candidate) => candidate.id === device.roomId);
+  return {
+    suggested_area: room?.label,
+    device: {
+      identifiers: [`${rootTopic}_${sanitize(device.id)}`],
+      name: device.label,
+      manufacturer: "Proactive AI Butler",
+      model: "Virtual Device",
+      via_device: `${rootTopic}_runtime`
+    }
+  };
 }

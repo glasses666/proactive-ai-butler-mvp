@@ -50,7 +50,12 @@ describe("MqttBridge", () => {
       command_topic: "butler/device/light_entry/command",
       state_topic: "butler/device/light_entry/state",
       payload_on: "on",
-      payload_off: "off"
+      payload_off: "off",
+      suggested_area: "Entry",
+      device: {
+        identifiers: ["butler_light_entry"],
+        name: "Entry Light"
+      }
     });
     expect(JSON.parse(coverDiscovery!.payload)).toMatchObject({
       command_topic: "butler/device/curtain_bedroom/command",
@@ -116,7 +121,12 @@ describe("MqttBridge", () => {
     expect(reminderDiscovery).toBeDefined();
     expect(JSON.parse(climateDiscovery.payload)).toMatchObject({
       command_topic: "butler/device/climate_bedroom/command",
-      state_topic: "butler/device/climate_bedroom/state"
+      state_topic: "butler/device/climate_bedroom/state",
+      suggested_area: "Bedroom",
+      device: {
+        identifiers: ["butler_climate_bedroom"],
+        name: "Bedroom Climate"
+      }
     });
   });
 });
